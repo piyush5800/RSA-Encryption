@@ -8,22 +8,28 @@ public:
   long int no[400];
   int place;
 
+  //Constructor function
   number()
   {
     place=0;
     for(int i=0; i<400; i++)
-    {
       no[i] = 0;
-    }
   }
+
+  //Function prototypes
+  number operator + (number num);
+  number multiply4 (long int no1);
+  void addZeros(int n);
+  number operator * (number num);
   friend ostream & operator << (ostream &out,  number no);
   friend istream & operator >> (istream &in, number &no);
 
+
 };
 
+//Number Input operator Declaration
 ostream & operator <<(ostream &out, number num)
 {
-  //cout<<"output called";
   for(int i=num.place-1; i>=0; i--)
   {
     if(num.no[i]/10==0)
@@ -42,16 +48,14 @@ ostream & operator <<(ostream &out, number num)
       out<<num.no[i];
     }
     else
-    {
       out<<num.no[i];
-    }
   }
   return out;
 }
 
+//Number Output operator declaration
 istream & operator >>(istream &in, number &num)
 {
-  //cout<<"Input called";
   char str[500];
   cin>>str;
   for(int i=strlen(str)-1; i>=0;)
@@ -70,18 +74,118 @@ istream & operator >>(istream &in, number &num)
       power++;
       i--;
     }
-    //cout<<ans<<"  ";
     num.no[num.place] = ans;
-    //cout<<num.no[num.place]<<"  ";
     num.place++;
-    //cout<<num.place<<"  ";
   }
   return in;
 }
 
+//Number add operator declaration
+number number::operator + (number num)
+{
+  number res;
+  int place1=0, place2=0;
+  long int temp=0;
 
+  while(place>=place1 || num.place>=place2)
+  {
+    temp = no[place1] + num.no[place2] + res.no[res.place];
+    int flag=0;
+    res.no[res.place] = temp%10000;
+    temp/=10000;
+    if(temp!=0)
+    {
+      flag=1;
+      res.place++;
+      res.no[res.place] = temp%10000;
+    }
+    if(flag!=1)
+      res.place++;
+    place1++;
+    place2++;
+  }
+  ++res.place;
+
+  //Checkpoint to remove all the extra zeroes from the beginning
+  for(int i=res.place-1; i>=0; i--)
+  {
+    if(res.no[i]>0)
+      break;
+    if(res.no[i]==0)
+      res.place--;
+  }
+  return res;
+}
+
+//Helper function to multiply a 'number' by 4 digit number
+number number::multiply4(long int no1)
+{
+  number res;
+  int temp_place2 = 0;
+
+  while(temp_place2<place)
+  {
+    //Calculates the product of each box of number by no1 and
+    //puts it in two (or one) box of result
+    long int ans = no1 * no[temp_place2];
+    int current = ans+res.no[res.place];
+    int flag=0;
+
+    res.no[res.place] = current%10000;
+    current/=10000;
+    if(current!=0)
+    {
+      flag=1;
+      res.place++;
+      res.no[res.place] = current%10000;
+    }
+    if(flag!=1)
+      res.place++;
+    temp_place2++;
+  }
+  ++res.place;
+
+  //To delete extra zeroes
+  for(int i=res.place-1; i>=0; i--)
+  {
+    if(res.no[i]>0)
+      break;
+    if(res.no[i]==0)
+      res.place--;
+  }
+  return res;
+}
+
+//Helper function to add n boxes of zeros at end of each step
+//of Multiplication
+void number::addZeros(int n)
+{
+  for(int i=place-1; i>=0; i--)
+    no[i+n] = no[i];
+  for(int i=0; i<n; i++)
+    no[i] = 0;
+  return;
+}
+
+//Number multiply operator Declaration
+number number::operator * (number num)
+{
+  number res;
+  int placet=0;
+  while(placet<place)
+  {
+    number temp;
+    temp = num.multiply4(no[placet]);
+    temp.addZeros(placet);
+    res = res+temp;
+    placet++;
+  }
+  return res;
+}
 int main()
 {
-
+  number num1, num2;
+  cin>>num1>>num2;
+  cout<<num1*num2;
   return 0;
 }
