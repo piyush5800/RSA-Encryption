@@ -25,7 +25,7 @@ public:
   number multiply4 (long int no1);
   friend number operator -(number num1, number num2);
   friend number operator /(number num1, number num2);
-  number operator %(number num);
+  friend number operator %(number num1, number num2);
   void addZeros(int n);
   number operator * (number num);
 
@@ -258,9 +258,24 @@ number operator /(number num1, number num2)
 }
 
 //Number modulo operator Declaration
-number number::operator %(number num)
+number operator %(number num1, number num2)
 {
-  
+  number ans;
+  if(num1<num2)
+  {
+    ans = num1;
+    return ans;
+  }
+
+  number one, k;
+  one.no[0] = 1;
+  one.place++;
+  while(num2*k<num1)
+  {
+    k = k+one;
+  }
+  k = k-one;
+  return num1-(num2*k);
 }
 
 //-------------------------------Class Declaration Ends Here-------------------------------------------------
@@ -269,7 +284,7 @@ int main()
   number num1, num2;
   cin>>num1>>num2;
   number ans;
-  ans = num1/num2;
+  ans = num1%num2;
   cout<<ans;
   return 0;
 }
