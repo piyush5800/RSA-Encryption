@@ -21,6 +21,8 @@ public:
   friend ostream & operator << (ostream &out,  number no);
   friend istream & operator >> (istream &in, number &no);
   bool operator <(number num);
+  bool operator ==(number num);
+  bool operator !=(number num);
   number operator + (number num);
   number multiply4 (long int no1);
   friend number operator -(number num1, number num2);
@@ -102,6 +104,50 @@ bool number::operator <(number num)
       return true;
     else if(no[i]>num.no[i])
       return false;
+  }
+  return false;
+}
+
+//Operator equal to Declaration
+bool number::operator ==(number num)
+{
+  if(place<num.place)
+  {
+    return false;
+  }
+  if(place>num.place)
+  {
+    return false;
+  }
+  //This loop is executed only if the number of places are equal
+  for(int i=place-1; i>=0; i--)
+  {
+    if(no[i]<num.no[i])
+      return false;
+    else if(no[i]>num.no[i])
+      return false;
+  }
+  return true;
+}
+
+//Operator not equal to Declaration
+bool number::operator !=(number num)
+{
+  if(place<num.place)
+  {
+    return true;
+  }
+  if(place>num.place)
+  {
+    return true;
+  }
+  //This loop is executed only if the number of places are equal
+  for(int i=place-1; i>=0; i--)
+  {
+    if(no[i]<num.no[i])
+      return true;
+    else if(no[i]>num.no[i])
+      return true;
   }
   return false;
 }
@@ -254,7 +300,14 @@ number operator /(number num1, number num2)
   {
     k = k+one;
   }
-  return k-one;
+  if((num2*k) == num1)
+  {
+    return k;
+  }
+  else
+  {
+    return k-one;
+  }
 }
 
 //Number modulo operator Declaration
@@ -274,17 +327,119 @@ number operator %(number num1, number num2)
   {
     k = k+one;
   }
-  k = k-one;
+  if((num2*k) == num1)
+  {
+  }
+  else
+  {
+    k = k-one;
+  }
   return num1-(num2*k);
 }
 
+number gcd(number num1, number num2)
+{
+  number zero;
+  zero.place++;
+  if(num1==zero)
+  {
+    return num2;
+  }
+  if(num2==zero)
+  {
+    return num1;
+  }
+
+  if(num1==num2)
+  {
+    return num1;
+  }
+
+  if(num2<num1)
+  {
+    return gcd(num1-num2, num2);
+  }
+  else
+  {
+    return gcd(num1, num2-num1);
+  }
+}
+
+number modular_expo(number x, number y, number p)
+{
+  number res;
+  res.no[0] = 1;
+  res.place++;
+  x = x%p;
+  number zero;
+  zero.place++;
+  number two;
+  two.no[0] = 2;
+  two.place++;
+  while(zero<y)
+  {
+    if((y%two)!=zero)
+    {
+      res = (res*x)%p;
+      //cout<<y%two;
+    }
+
+    y = y/two;
+    x = (x*x)%p;
+    //cout<<res<<"  "<<x<<"  "<<y<<"  "<<p<<endl;
+  }
+  //cout<<endl;
+  return res;
+}
 //-------------------------------Class Declaration Ends Here-------------------------------------------------
 int main()
 {
-  number num1, num2;
-  cin>>num1>>num2;
-  number ans;
-  ans = num1%num2;
-  cout<<ans;
+  number p, q;
+  cin>>p>>q;
+  number n;
+  n = p*q;
+  number totient;
+  number count;
+  number one;
+  one.no[0] = 1;
+  one.place++;
+  totient = (p-one) * (q-one);
+  number e;
+  e.no[0] = 2;
+  e.place++;
+  while(e<totient)
+  {
+    count = gcd(e, totient);
+    if(count == one)
+    {
+      break;
+    }
+    else
+    {
+      e = e+one;
+    }
+  }
+
+  number d;
+  number k, two;
+  two.no[0] = 2;
+  two.place++;
+  k = two;
+
+  d = (one+(k*totient))/e;
+  number msg;
+  cin>>msg;
+  number c = modular_expo(msg, e, n);
+  number m = modular_expo(c, d, n);
+
+  cout<<"Message data = "<<msg;
+  cout<<"\n"<<"p = "<<p;
+  cout<<"\n"<<"q = "<<q;
+  cout<<"\n"<<"n = pq = "<<n;
+  cout<<"\n"<<"totient = "<<totient;
+  cout<<"\n"<<"e = "<<e;
+  cout<<"\n"<<"d = "<<d;
+  cout<<"\n"<<"Encrypted data = "<<c;
+  cout<<"\n"<<"Original Message sent = "<<m;
   return 0;
 }
