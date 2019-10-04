@@ -2,6 +2,7 @@
 #include<math.h>
 using namespace std;
 
+//----------------------This is the class Declaration that includes basic operations on big numbers-----------------
 class number
 {
 public:
@@ -19,6 +20,10 @@ public:
   //Function prototypes
   number operator + (number num);
   number multiply4 (long int no1);
+  bool operator <(number num);
+  number operator -(number num);
+  number operator /(number num);
+  number operator %(number num);
   void addZeros(int n);
   number operator * (number num);
   friend ostream & operator << (ostream &out,  number no);
@@ -80,6 +85,28 @@ istream & operator >>(istream &in, number &num)
   return in;
 }
 
+//Operator less than Declaration
+bool number::operator <(number num)
+{
+  if(place<num.place)
+  {
+    return true;
+  }
+  if(place>num.place)
+  {
+    return false;
+  }
+  //This loop is executed only if the number of places are equal
+  for(int i=place-1; i>=0; i--)
+  {
+    if(no[i]<num.no[i])
+      return true;
+    else if(no[i]>num.no[i])
+      return false;
+  }
+  return false;
+}
+
 //Number add operator declaration
 number number::operator + (number num)
 {
@@ -117,6 +144,22 @@ number number::operator + (number num)
   return res;
 }
 
+//Number subtract operator Declaration
+number number::operator -(number num)
+{
+
+}
+
+//Number divide operator Declaration
+number number::operator /(number num)
+{
+
+}
+//Number modulo operator Declaration
+number number::operator %(number num)
+{
+
+}
 //Helper function to multiply a 'number' by 4 digit number
 number number::multiply4(long int no1)
 {
@@ -182,10 +225,14 @@ number number::operator * (number num)
   }
   return res;
 }
+
+
+//-------------------------------Class Declaration Ends Here-------------------------------------------------
 int main()
 {
   number num1, num2;
   cin>>num1>>num2;
-  cout<<num1*num2;
+  bool ans = num1<num2;
+  cout<<ans;
   return 0;
 }
