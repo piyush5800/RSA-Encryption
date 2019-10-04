@@ -18,11 +18,17 @@ public:
   }
 
   //Function prototypes
+
+  //IO operators
   friend ostream & operator << (ostream &out,  number no);
   friend istream & operator >> (istream &in, number &no);
+
+  //Comaprison Operators
   bool operator <(number num);
   bool operator ==(number num);
   bool operator !=(number num);
+
+  //Mathematical operators
   number operator + (number num);
   number multiply4 (long int no1);
   friend number operator -(number num1, number num2);
@@ -337,6 +343,7 @@ number operator %(number num1, number num2)
   return num1-(num2*k);
 }
 
+//Function to calculate GCD by using the Euclidean Algorithm
 number gcd(number num1, number num2)
 {
   number zero;
@@ -364,7 +371,7 @@ number gcd(number num1, number num2)
     return gcd(num1, num2-num1);
   }
 }
-
+//Modular exponentiaiton function to calculate (x^y)%p
 number modular_expo(number x, number y, number p)
 {
   number res;
@@ -391,20 +398,31 @@ number modular_expo(number x, number y, number p)
   //cout<<endl;
   return res;
 }
-//-------------------------------Class Declaration Ends Here-------------------------------------------------
+//-------------------------------------MAIN RSA PROGRAM----------------------------
 int main()
 {
-  number p, q;
-  cin>>p>>q;
-  number n;
-  n = p*q;
-  number totient;
-  number count;
+  //number 1 declared to use later
   number one;
   one.no[0] = 1;
   one.place++;
+
+  //Input 2 prime numbers from the user
+  number p, q;
+  cout<<"Enter p: ";
+  cin>>p;
+  cout<<"Enter q: ";
+  cin>>q;
+
+  //Calculate n
+  number n;
+  n = p*q;
+
+  //Calculate totient
+  number totient;
   totient = (p-one) * (q-one);
-  number e;
+
+  //Calculate e
+  number count, e;
   e.no[0] = 2;
   e.place++;
   while(e<totient)
@@ -420,18 +438,25 @@ int main()
     }
   }
 
-  number d;
-  number k, two;
+  //Calculate d
+  number d, two, k;
   two.no[0] = 2;
   two.place++;
   k = two;
-
   d = (one+(k*totient))/e;
+
+  //Input plaintext number from user
   number msg;
+  cout<<"Plaintext: ";
   cin>>msg;
+
+  //Calculate ciphertext number
   number c = modular_expo(msg, e, n);
+
+  //Calculate plaintext number from c
   number m = modular_expo(c, d, n);
 
+  //Print all data
   cout<<"Message data = "<<msg;
   cout<<"\n"<<"p = "<<p;
   cout<<"\n"<<"q = "<<q;
@@ -441,5 +466,6 @@ int main()
   cout<<"\n"<<"d = "<<d;
   cout<<"\n"<<"Encrypted data = "<<c;
   cout<<"\n"<<"Original Message sent = "<<m;
+
   return 0;
 }
