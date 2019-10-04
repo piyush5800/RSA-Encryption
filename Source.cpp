@@ -18,17 +18,16 @@ public:
   }
 
   //Function prototypes
+  friend ostream & operator << (ostream &out,  number no);
+  friend istream & operator >> (istream &in, number &no);
+  bool operator <(number num);
   number operator + (number num);
   number multiply4 (long int no1);
-  bool operator <(number num);
-  number operator -(number num);
+  friend number operator -(number num1, number num2);
   number operator /(number num);
   number operator %(number num);
   void addZeros(int n);
   number operator * (number num);
-  friend ostream & operator << (ostream &out,  number no);
-  friend istream & operator >> (istream &in, number &no);
-
 
 };
 
@@ -145,21 +144,33 @@ number number::operator + (number num)
 }
 
 //Number subtract operator Declaration
-number number::operator -(number num)
+number operator -(number num1, number num2)
 {
-
+  number ans;
+  if(num1<num2)
+  {
+    ans = num2-num1;
+    return ans;
+  }
+  int carry=0;
+  for(int i=0; i<num1.place; i++)
+  {
+    ans.no[i] = num1.no[i] - num2.no[i] - carry;
+    if(ans.no[i] < 0)
+    {
+      ans.no[i]+=10000;
+      carry=1;
+    }
+    else
+    {
+      carry=0;
+    }
+    ans.place++;
+  }
+  return ans;
 }
 
-//Number divide operator Declaration
-number number::operator /(number num)
-{
 
-}
-//Number modulo operator Declaration
-number number::operator %(number num)
-{
-
-}
 //Helper function to multiply a 'number' by 4 digit number
 number number::multiply4(long int no1)
 {
@@ -226,13 +237,25 @@ number number::operator * (number num)
   return res;
 }
 
+//Number divide operator Declaration
+number number::operator /(number num)
+{
+  
+}
+
+//Number modulo operator Declaration
+number number::operator %(number num)
+{
+
+}
 
 //-------------------------------Class Declaration Ends Here-------------------------------------------------
 int main()
 {
   number num1, num2;
   cin>>num1>>num2;
-  bool ans = num1<num2;
-  cout<<ans;
+  number ans;
+  ans = num1-num2;
+  cout<<num1-num2;
   return 0;
 }
